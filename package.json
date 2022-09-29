@@ -1,6 +1,6 @@
 {
   "name": "emojiboard",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A TypeScript only library for creating and interacting with a boardgame board of emojis.",
   "main": "src/main.ts",
   "scripts": {
