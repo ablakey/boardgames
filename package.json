@@ -1,11 +1,13 @@
 {
-  "name": "RENAME_ME",
+  "name": "emojiboard",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A TypeScript only library for creating and interacting with a boardgame board of emojis.",
+  "main": "src/main.ts",
   "scripts": {
-    "start": "parcel ./src/index.html",
-    "build": "parcel build --public-url ./ --no-source-maps"
+    "start": "parcel ./example/index.html",
+    "validate": "tsc ./src/main.ts --noEmit && eslint src --ext .ts  && prettier --check 'src/**/*.ts'",
+    "release": "npm version patch && git push && git push --tags",
+    "prepublish": "npm run validate"
   },
   "author": "Andrew Blakey",
   "license": "MIT",

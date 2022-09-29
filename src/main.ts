@@ -1,1 +1,5 @@
-console.log("Hello, world!");
+export class Foo {
+  static bar() {
+    console.log("Hello!");
+  }
+}

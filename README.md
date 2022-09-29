@@ -1,5 +1,5 @@
-# RENAME_ME
+# emojiboard
 
-A watched pot never boilerplates.
+A TypeScript only library for creating and interacting with a boardgame board of emojis.
 
-Yes, this is just my personal boilerplate for the minimal _comfortable_ configuration.
+You really shouldn't use this. I have no plans on supporting it publicly.
