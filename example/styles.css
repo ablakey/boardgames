@@ -14,7 +14,17 @@
 }
 
 .cell {
+  aspect-ratio: 1/1;
   border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inner {
+  font-size: calc(min(10vw, 10vh - 15px) * 5);
+  position: absolute;
+  /* animation: color_change 1s infinite alternate; */
 }
 
 .bottom {
@@ -32,4 +42,13 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+@keyframes color_change {
+  from {
+    font-size: 12pt;
+  }
+  to {
+    font-size: 44pt;
+  }
 }
