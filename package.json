@@ -2,10 +2,9 @@
   "name": "emojiboard",
   "version": "1.0.2",
   "description": "A TypeScript only library for creating and interacting with a boardgame board of emojis.",
-  "main": "src/main.ts",
   "scripts": {
     "start": "parcel ./example/index.html",
-    "validate": "tsc ./src/main.ts --noEmit && eslint src --ext .ts  && prettier --check 'src/**/*.ts'",
+    "validate": "tsc ./src/index.ts --noEmit && eslint src --ext .ts  && prettier --check 'src/**/*.ts'",
     "release": "npm version patch && git push && git push --tags",
     "prepublish": "npm run validate"
   },
