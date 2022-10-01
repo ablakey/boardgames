@@ -1,12 +1,9 @@
 {
-  "name": "emojiboard",
+  "name": "boardgames",
   "version": "1.0.2",
-  "description": "A TypeScript only library for creating and interacting with a boardgame board of emojis.",
+  "description": "An assortment of boardgames",
   "scripts": {
-    "start": "parcel ./example/index.html",
-    "validate": "tsc ./src/index.ts --noEmit && eslint src --ext .ts  && prettier --check 'src/**/*.ts'",
-    "release": "npm version patch && git push && git push --tags",
-    "prepublish": "npm run validate"
+    "start": "parcel ./src/game1/index.html"
   },
   "author": "Andrew Blakey",
   "license": "MIT",

@@ -1,4 +1,4 @@
-# emojiboard
+# boardgames
 
 A TypeScript only library for creating and interacting with a boardgame board of emojis.
 
