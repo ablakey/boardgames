@@ -21,7 +21,7 @@ export class Board {
       innerEl.setAttribute("class", "board-inner");
       innerEl.innerText = "A";
       cellEl.appendChild(innerEl);
-      // cellEl.draggable = true;
+      cellEl.draggable = true;
 
       boardEl.appendChild(cellEl);
     }
