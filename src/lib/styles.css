@@ -1,6 +1,6 @@
 .board {
-  width: min(100vw, 100vh - 150px);
-  height: min(100vh - 150px, 100vw);
+  width: min(100vw, 100vh - 160px);
+  height: min(100vh - 160px, 100vw);
   gap: 2px;
   display: grid;
   /* Implemented in JavaScript to define the grid size based on code. */
@@ -9,23 +9,22 @@
 
 .board-cell {
   aspect-ratio: 1/1;
-  border: 1px solid black;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .board-inner {
-  font-size: calc(min(10vw, 10vh - 15px) * 1);
+  font-size: calc(min(10vw, 10vh - 16px) * 1.8);
   position: absolute;
-  /* animation: color_change 1s infinite alternate; */
+  animation: size_change 1s infinite alternate;
 }
 
-@keyframes color_change {
+@keyframes size_change {
   from {
-    font-size: 12pt;
+    font-size: calc(min(10vw, 10vh - 16px) * 1.4);
   }
   to {
-    font-size: 44pt;
+    font-size: calc(min(10vw, 10vh - 16px) * 1.8);
   }
 }

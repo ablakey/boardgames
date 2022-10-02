@@ -1,16 +1,23 @@
 import { assert } from "./utils";
 
+const pieces = ["🔴", "⚫"] as const;
+
+type Piece = typeof pieces[number];
+type Cell = { container: HTMLDivElement; inner: HTMLDivElement };
+
 export class Board {
+  private cells: Cell[];
+  private size: number;
+
   constructor(size: number, targetId: string) {
+    this.size = size;
+    this.cells = [];
+
     const fragment = document.createDocumentFragment();
 
-    // Build the board.
-    console.log("foo");
     const boardEl = document.createElement("div");
     boardEl.setAttribute("class", "board");
     boardEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-    console.log(boardEl.style.gridTemplateColumns);
-
     fragment.appendChild(boardEl);
 
     for (let x = 0; x < size ** 2; x++) {
@@ -19,16 +26,24 @@ export class Board {
 
       const innerEl = document.createElement("div");
       innerEl.setAttribute("class", "board-inner");
-      innerEl.innerText = "A";
+      innerEl.innerText = "";
       cellEl.appendChild(innerEl);
-      cellEl.draggable = true;
+
+      this.cells.push({ container: cellEl, inner: innerEl });
 
       boardEl.appendChild(cellEl);
     }
 
-    // Attach to DOM.
     const parent = document.querySelector(`#${targetId}`);
     assert(parent);
     parent.appendChild(fragment);
+  }
+
+  private get(x: number, y: number): Cell {
+    return this.cells[this.size ** 2 - this.size * y + x - 5];
+  }
+
+  set(x: number, y: number, piece: Piece) {
+    this.get(x, y).inner.innerText = piece;
   }
 }
