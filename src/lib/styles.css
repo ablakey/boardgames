@@ -1,12 +1,35 @@
-.board {
-  width: min(100vw, 100vh - 160px);
-  height: min(100vh - 160px, 100vw);
-  gap: 2px;
-  display: grid;
-  /* Implemented in JavaScript to define the grid size based on code. */
-  /* grid-template-columns: repeat(3, 1fr); */
+:root {
+  --tray-height: 20vmin;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  touch-action: none;
+  background-color: #ccc;
+}
+
+#container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.board {
+  width: min(100vw, 100vh - var(--tray-height));
+  height: min(100vh - var(--tray-height), 100vw);
+  gap: 2px;
+  display: grid;
+}
 .board-cell {
   aspect-ratio: 1/1;
   display: flex;
@@ -15,16 +38,45 @@
 }
 
 .board-inner {
-  font-size: calc(min(10vw, 10vh - 16px) * 1.8);
+  font-size: calc(min(10vw, 10vh - calc(var(--tray-height) / 10)) * 1.8);
   position: absolute;
-  animation: size_change 1s infinite alternate;
 }
 
-@keyframes size_change {
+.tray {
+  height: var(--tray-height);
+  max-height: var(--tray-height);
+  width: 100vw;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.tray-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  aspect-ratio: 3/4;
+}
+
+.card-piece {
+  font-size: calc(min(10vw, 10vh - tray) * 1.8);
+}
+
+.card-count {
+  font-weight: bold;
+  font-family: sans-serif;
+  font-size: 16pt;
+  position: relative;
+  bottom: 10%;
+}
+/* @keyframes size_change {
   from {
-    font-size: calc(min(10vw, 10vh - 16px) * 1.4);
+    font-size: calc(min(10vw, 10vh - 15px) * 1.4);
   }
   to {
-    font-size: calc(min(10vw, 10vh - 16px) * 1.8);
+    font-size: calc(min(10vw, 10vh - 15px) * 1.8);
   }
-}
+} */
+
+/* animation: size_change 1s infinite alternate; */
