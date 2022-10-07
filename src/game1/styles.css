@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+}
+
+* {
+  touch-action: none;
+  pointer-events: none;
+}
+input,
+button,
+a {
+  pointer-events: auto;
+}
+
+body {
+  height: calc(var(--vh, 1vh) * 100);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 60px);
+  grid-auto-rows: 60px;
+  justify-content: center;
+}
+
+.cell {
+  border: 1px solid purple;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner {
+  font-size: 40pt;
+}
