@@ -1,5 +1,7 @@
 import { assert, pickRandom } from "../lib/utils";
 
+export type Point = { x: number; y: number };
+
 const CELL_SIZE = 60;
 
 export class Grid<Token extends string> {
@@ -8,7 +10,7 @@ export class Grid<Token extends string> {
   cells: { outer: HTMLDivElement; inner: HTMLDivElement }[] = [];
   tokens: Token[];
 
-  constructor(opts: { onClick: VoidFunction; tokens: Token[] }) {
+  constructor(opts: { onClick: (point: Point, value: Token | null) => void; tokens: Token[] }) {
     this.tokens = opts.tokens;
 
     // Hack to make the grid on iOS devices not get covered up by the bottom bar.
@@ -44,7 +46,11 @@ export class Grid<Token extends string> {
     for (let n = 0; n < this.width * this.height; n++) {
       const outer = document.createElement("div");
       outer.className = "outer";
-      outer.onclick = opts.onClick;
+      outer.onclick = () => {
+        const x = n % this.width;
+        const y = this.height - Math.floor(n / this.width) - 1;
+        opts.onClick({ x, y }, null);
+      };
 
       const inner = document.createElement("div");
       inner.className = "inner";
@@ -62,24 +68,63 @@ export class Grid<Token extends string> {
     grid.style.height = grid.offsetHeight.toString();
   }
 
-  private getCell(x: number, y: number) {
-    if (x >= this.width || y >= this.height) {
+  private getCell(point: Point) {
+    if (point.x >= this.width || point.y >= this.height) {
       throw new Error("Coordinates sit outside the board.");
     }
-    return this.cells[this.width * this.height - this.width + x - y * this.width];
+    return this.cells[this.width * this.height - this.width + point.x - point.y * this.width];
   }
 
-  public get(x: number, y: number): Token | null {
-    return (this.getCell(x, y).inner.innerText || null) as Token | null;
+  public get(point: Point): Token | null {
+    return (this.getCell(point).inner.innerText || null) as Token | null;
   }
 
-  public set(x: number, y: number, token: Token) {
-    this.getCell(x, y).inner.innerText = token;
+  public set(point: Point, token: Token) {
+    this.getCell(point).inner.innerText = token;
+  }
+
+  public setBg(point: Point, backgroundColor: string) {
+    this.getCell(point).outer.style.backgroundColor = backgroundColor;
   }
 
   public populateCells() {
     this.cells.forEach((c) => {
       c.inner.innerText = pickRandom(this.tokens);
     });
+  }
+
+  /**
+   * Return a collection of all cells whose value is the same of `point`,
+   * where they are touching `point` or any cell touched by point, recursively.
+   */
+  public getContiguous(point: Point): { point: Point; value: Token | null }[] {
+    const self = this; // eslint-disable-line @typescript-eslint/no-this-alias
+    const value = this.get(point);
+    const matches = new Map<string, Point>();
+
+    function checkNeighbours(pt: Point) {
+      if (matches.has(`${pt.x}.${pt.y}`) || self.get(pt) !== value) {
+        return;
+      }
+
+      matches.set(`${pt.x}.${pt.y}`, pt);
+
+      const neighbours: Point[] = [
+        { x: pt.x - 1, y: pt.y },
+        { x: pt.x + 1, y: pt.y },
+        { x: pt.x, y: pt.y - 1 },
+        { x: pt.x, y: pt.y + 1 },
+      ];
+
+      neighbours.forEach((n) => {
+        if (n.x >= 0 && n.y >= 0 && n.x < self.width && n.y < self.height) {
+          checkNeighbours(n);
+        }
+      });
+    }
+
+    checkNeighbours(point);
+
+    return Array.from(matches.values()).map((point) => ({ point, value: this.get(point) }));
   }
 }

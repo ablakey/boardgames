@@ -1,18 +1,16 @@
-import { Grid } from "../lib/grid";
+import { Grid, Point } from "../lib/grid";
 
-const tokens = ["😈", "👻", "🎃", "🧟"];
+// const tokens = ["😈", "👻", "🎃", "🧟"];
+const tokens = ["😈", "👻"];
 
 function main() {
-  const grid = new Grid({ onClick: console.log, tokens });
+  function onClick(point: Point) {
+    const contiguous = grid.getContiguous(point);
+    contiguous.forEach((c) => grid.setBg(c.point, "cyan"));
+  }
+
+  const grid = new Grid({ onClick, tokens });
   grid.populateCells();
-  const x = grid.get(0, 0);
-  console.log(x);
-
-  grid.set(1, 1, "a");
-
-  // requestAnimationFrame(() => {
-  // setGrid();
-  // });
 }
 
 window.onload = main;
