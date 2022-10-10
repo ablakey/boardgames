@@ -1,4 +1,4 @@
-import { Grid, Point } from "../lib/grid";
+import { Grid, Point } from "./grid";
 
 // const tokens = ["😈", "👻", "🎃", "🧟"];
 const tokens = ["😈", "👻"];

@@ -1,8 +1,8 @@
-import { assert, pickRandom } from "../lib/utils";
+import { assert, pickRandom } from "./utils";
 
 export type Point = { x: number; y: number };
 
-const CELL_SIZE = 60;
+const CELL_SIZE = 40;
 
 export class Grid<Token extends string> {
   width: number;
@@ -14,35 +14,32 @@ export class Grid<Token extends string> {
     this.tokens = opts.tokens;
 
     // Hack to make the grid on iOS devices not get covered up by the bottom bar.
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    // const vh = window.innerHeight * 0.01;
+    // document.documentElement.style.setProperty("--vh", `${vh}px`);
 
     // Get the body and grid, calculate how many cells should exist.
-    const body = document.querySelector<HTMLDivElement>("body");
-    assert(body);
+    const gridContainer = document.querySelector<HTMLDivElement>(".gridcontainer");
+    assert(gridContainer);
 
     const grid = document.querySelector<HTMLDivElement>(".grid");
     assert(grid);
 
-    this.width = Math.floor(body.offsetWidth / CELL_SIZE);
-    this.height = Math.floor(body.offsetHeight / CELL_SIZE);
+    console.log(gridContainer.offsetWidth, gridContainer.offsetHeight);
+
+    this.width = Math.floor(gridContainer.offsetWidth / CELL_SIZE);
+    this.height = Math.floor(gridContainer.offsetHeight / CELL_SIZE);
 
     // Make sure there's always an odd number of cells (for games with a centered token).
     if (this.width % 2 === 0) {
       this.width -= 1;
-      grid.style.marginLeft = `${CELL_SIZE / 2}px`;
-      grid.style.marginRight = `${CELL_SIZE / 2}px`;
-    }
-
-    if (this.height % 2 === 0) {
-      this.height -= 1;
-      grid.style.marginTop = `${CELL_SIZE / 2}px`;
-      grid.style.marginBottom = `${CELL_SIZE / 2}px`;
+      gridContainer.style.paddingLeft = `${CELL_SIZE / 2}px`;
+      gridContainer.style.paddingRight = `${CELL_SIZE / 2}px`;
     }
 
     // Build all the elements as a fragment to be appended in one operation.
     const fragment = document.createDocumentFragment();
 
+    console.log(this.width, this.height, this.width * this.height);
     for (let n = 0; n < this.width * this.height; n++) {
       const outer = document.createElement("div");
       outer.className = "outer";
@@ -61,11 +58,12 @@ export class Grid<Token extends string> {
       this.cells.push({ inner, outer });
     }
 
+    console.log(this.cells.length);
     grid.appendChild(fragment);
 
     // Absolutely size the grid so that it doesn't reshape if window resizes.
-    grid.style.width = grid.offsetWidth.toString();
-    grid.style.height = grid.offsetHeight.toString();
+    // grid.style.width = grid.offsetWidth.toString();
+    // grid.style.height = grid.offsetHeight.toString();
   }
 
   private getCell(point: Point) {

@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "An assortment of boardgames",
   "scripts": {
-    "start": "parcel ./src/game1/index.html"
+    "start": "parcel ./src/index.html"
   },
   "author": "Andrew Blakey",
   "license": "MIT",
