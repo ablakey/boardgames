@@ -1,21 +1,22 @@
+import { Rect } from "./Rect";
 import { assert, pickRandom } from "./utils";
 
 export type Point = { x: number; y: number };
 
-const CELL_SIZE = 40;
-
-export class Grid<Token extends string> {
-  width: number;
-  height: number;
+export class Grid<Tile extends string> extends Rect {
   cells: { outer: HTMLDivElement; inner: HTMLDivElement }[] = [];
-  tokens: Token[];
+  tokens: readonly Tile[];
+  cellSize: number;
 
-  constructor(opts: { onClick: (point: Point, value: Token | null) => void; tokens: Token[] }) {
-    this.tokens = opts.tokens;
-
+  constructor(opts: {
+    onClick?: (point: Point, value: Tile | null) => void;
+    tokens: readonly Tile[];
+    cellSize: number;
+  }) {
     // Hack to make the grid on iOS devices not get covered up by the bottom bar.
-    // const vh = window.innerHeight * 0.01;
-    // document.documentElement.style.setProperty("--vh", `${vh}px`);
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    document.documentElement.style.setProperty("--cellsize", `${opts.cellSize}px`);
 
     // Get the body and grid, calculate how many cells should exist.
     const gridContainer = document.querySelector<HTMLDivElement>(".gridcontainer");
@@ -24,30 +25,37 @@ export class Grid<Token extends string> {
     const grid = document.querySelector<HTMLDivElement>(".grid");
     assert(grid);
 
-    console.log(gridContainer.offsetWidth, gridContainer.offsetHeight);
+    const width = Math.floor(gridContainer.offsetWidth / opts.cellSize);
+    const height = Math.floor(gridContainer.offsetHeight / opts.cellSize);
+    super(width, height, 0, 0);
 
-    this.width = Math.floor(gridContainer.offsetWidth / CELL_SIZE);
-    this.height = Math.floor(gridContainer.offsetHeight / CELL_SIZE);
-
-    // Make sure there's always an odd number of cells (for games with a centered token).
+    // Make sure there's always an odd number of cells (for games with a centered tile).
     if (this.width % 2 === 0) {
       this.width -= 1;
-      gridContainer.style.paddingLeft = `${CELL_SIZE / 2}px`;
-      gridContainer.style.paddingRight = `${CELL_SIZE / 2}px`;
+      gridContainer.style.paddingLeft = `${opts.cellSize / 2}px`;
+      gridContainer.style.paddingRight = `${opts.cellSize / 2}px`;
+    }
+
+    if (this.height % 2 === 0) {
+      this.height -= 1;
+      gridContainer.style.paddingTop = `${opts.cellSize / 2}px`;
+      gridContainer.style.paddingBottom = `${opts.cellSize / 2}px`;
     }
 
     // Build all the elements as a fragment to be appended in one operation.
     const fragment = document.createDocumentFragment();
 
-    console.log(this.width, this.height, this.width * this.height);
     for (let n = 0; n < this.width * this.height; n++) {
       const outer = document.createElement("div");
       outer.className = "outer";
-      outer.onclick = () => {
-        const x = n % this.width;
-        const y = this.height - Math.floor(n / this.width) - 1;
-        opts.onClick({ x, y }, null);
-      };
+
+      if (opts.onClick !== undefined) {
+        outer.onclick = () => {
+          const x = n % this.width;
+          const y = this.height - Math.floor(n / this.width) - 1;
+          opts.onClick!({ x, y }, null);
+        };
+      }
 
       const inner = document.createElement("div");
       inner.className = "inner";
@@ -58,12 +66,14 @@ export class Grid<Token extends string> {
       this.cells.push({ inner, outer });
     }
 
-    console.log(this.cells.length);
     grid.appendChild(fragment);
 
     // Absolutely size the grid so that it doesn't reshape if window resizes.
-    // grid.style.width = grid.offsetWidth.toString();
-    // grid.style.height = grid.offsetHeight.toString();
+    gridContainer.style.width = gridContainer.offsetWidth.toString();
+    gridContainer.style.height = gridContainer.offsetHeight.toString();
+
+    this.tokens = opts.tokens;
+    this.cellSize = opts.cellSize;
   }
 
   private getCell(point: Point) {
@@ -73,19 +83,19 @@ export class Grid<Token extends string> {
     return this.cells[this.width * this.height - this.width + point.x - point.y * this.width];
   }
 
-  public get(point: Point): Token | null {
-    return (this.getCell(point).inner.innerText || null) as Token | null;
+  get(point: Point): Tile | null {
+    return (this.getCell(point).inner.innerText || null) as Tile | null;
   }
 
-  public set(point: Point, token: Token) {
-    this.getCell(point).inner.innerText = token;
+  set(point: Point, tile: Tile) {
+    this.getCell(point).inner.innerText = tile;
   }
 
-  public setBg(point: Point, backgroundColor: string) {
+  setBg(point: Point, backgroundColor: string) {
     this.getCell(point).outer.style.backgroundColor = backgroundColor;
   }
 
-  public populateCells() {
+  populateCells() {
     this.cells.forEach((c) => {
       c.inner.innerText = pickRandom(this.tokens);
     });
@@ -95,7 +105,7 @@ export class Grid<Token extends string> {
    * Return a collection of all cells whose value is the same of `point`,
    * where they are touching `point` or any cell touched by point, recursively.
    */
-  public getContiguous(point: Point): { point: Point; value: Token | null }[] {
+  getContiguous(point: Point): { point: Point; value: Tile | null }[] {
     const self = this; // eslint-disable-line @typescript-eslint/no-this-alias
     const value = this.get(point);
     const matches = new Map<string, Point>();
@@ -124,5 +134,17 @@ export class Grid<Token extends string> {
     checkNeighbours(point);
 
     return Array.from(matches.values()).map((point) => ({ point, value: this.get(point) }));
+  }
+
+  drawRect(rect: Rect, tile: Tile) {
+    if (!this.contains(rect)) {
+      throw new Error("Cannot draw rect. It does not fit on the grid.");
+    }
+
+    for (let y = rect.y; y < rect.yMax; y++) {
+      for (let x = rect.x; x < rect.xMax; x++) {
+        this.set({ x, y }, tile);
+      }
+    }
   }
 }

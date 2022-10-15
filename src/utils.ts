@@ -4,7 +4,19 @@ export function assert(condition: any): asserts condition {
   }
 }
 
-export function pickRandom<T>(items: T[]) {
+export function pickRandom<T>(items: readonly T[]) {
   const x = Math.floor(Math.random() * items.length);
   return items[x];
+}
+
+export function randInt(min = 0, max = Number.POSITIVE_INFINITY, oddOnly = false): number {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  const value = Math.floor(Math.random() * (max - min + 1)) + min;
+
+  if (oddOnly && value % 2 === 0) {
+    return randInt(min, max, oddOnly);
+  }
+
+  return value;
 }
