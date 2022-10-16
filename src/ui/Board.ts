@@ -1,5 +1,6 @@
-import { Point, Rect } from "./structs";
-import { assert } from "./utils";
+import { Point } from "../structs/Point";
+import { Rect } from "../structs/Rect";
+import { assert } from "../utils";
 
 export class Board extends Rect {
   cells: { outer: HTMLDivElement; inner: HTMLDivElement }[] = [];

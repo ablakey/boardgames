@@ -1,4 +1,4 @@
-import { Board } from "./Board";
+import { Board } from "./ui/Board";
 import {
   MAX_ROOM_COUNT,
   MAX_ROOM_ECCENTRICITY,
@@ -6,7 +6,7 @@ import {
   MIN_ROOM_SIZE,
   tileEmojis,
 } from "./config";
-import { World } from "./World";
+import { World } from "./game/World";
 
 function main() {
   const board = new Board({ cellSize: 15 });

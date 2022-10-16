@@ -1,8 +1,7 @@
-import { Tile } from "./config";
-import { Tiles, Rect } from "./structs";
-import { randInt } from "./utils";
-
-const MAX_ROOM_ITERATIONS = 10000;
+import { MAX_ROOM_ITERATIONS, Tile } from "../config";
+import { Point } from "../structs/Point";
+import { Rect } from "../structs/Rect";
+import { randInt } from "../utils";
 
 type WorldOptions = {
   width: number;
@@ -12,6 +11,34 @@ type WorldOptions = {
   maxRoomSize: number;
   maxRoomCount: number;
 };
+
+class Tiles {
+  private data: Tile[]; // Row-major.
+  private width: number;
+  private height: number;
+
+  constructor(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+    this.data = new Array<Tile>(width * height).fill(Tile.Wall);
+  }
+
+  get(point: Point) {
+    return this.data[point.y * this.width + point.x];
+  }
+
+  set(point: Point, tile: Tile) {
+    this.data[point.y * this.width + point.x] = tile;
+  }
+
+  forEach(callback: (point: Point, tile: Tile) => void) {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        callback({ x, y }, this.get({ x, y }));
+      }
+    }
+  }
+}
 
 export class World {
   tiles: Tiles;
