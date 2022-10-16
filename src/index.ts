@@ -1,26 +1,26 @@
-import { Grid } from "./grid";
+import { Board } from "./Board";
+import {
+  MAX_ROOM_COUNT,
+  MAX_ROOM_ECCENTRICITY,
+  MAX_ROOM_SIZE,
+  MIN_ROOM_SIZE,
+  tileEmojis,
+} from "./config";
 import { World } from "./World";
 
-// const tokens = ["😈", "👻", "🎃", "🧟"];
-const tokens = ["😈", "👻"] as const;
-
 function main() {
-  // function onClick(point: Point) {
-  //   const contiguous = grid.getContiguous(point);
-  //   contiguous.forEach((c) => grid.setBg(c.point, "cyan"));
-  // }
-
-  const grid = new Grid({ tokens, cellSize: 15 });
+  const board = new Board({ cellSize: 15 });
 
   const world = new World({
-    width: grid.width,
-    height: grid.height,
-    minRoomSize: 5,
-    maxRoomSize: 13,
-    maxEccentricity: 7,
-    maxRoomCount: 15,
+    width: board.width,
+    height: board.height,
+    minRoomSize: MIN_ROOM_SIZE,
+    maxRoomSize: MAX_ROOM_SIZE,
+    maxEccentricity: MAX_ROOM_ECCENTRICITY,
+    maxRoomCount: MAX_ROOM_COUNT,
   });
-  world.rooms.forEach((r) => grid.drawRect(r, "😈"));
+
+  world.tiles.forEach((point, tile) => board.set(point, tileEmojis[tile]));
 }
 
 window.onload = main;

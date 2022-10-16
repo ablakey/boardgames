@@ -1,45 +1,43 @@
-import { Rect } from "./Rect";
-import { assert, pickRandom } from "./utils";
+import { Point, Rect } from "./structs";
+import { assert } from "./utils";
 
-export type Point = { x: number; y: number };
-
-export class Grid<Tile extends string> extends Rect {
+export class Board extends Rect {
   cells: { outer: HTMLDivElement; inner: HTMLDivElement }[] = [];
-  tokens: readonly Tile[];
+
   cellSize: number;
 
   constructor(opts: {
-    onClick?: (point: Point, value: Tile | null) => void;
-    tokens: readonly Tile[];
+    onClick?: (point: Point, value: string | null) => void;
+
     cellSize: number;
   }) {
-    // Hack to make the grid on iOS devices not get covered up by the bottom bar.
+    // Hack to make the board on iOS devices not get covered up by the bottom bar.
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
     document.documentElement.style.setProperty("--cellsize", `${opts.cellSize}px`);
 
-    // Get the body and grid, calculate how many cells should exist.
-    const gridContainer = document.querySelector<HTMLDivElement>(".gridcontainer");
-    assert(gridContainer);
+    // Get the body and board, calculate how many cells should exist.
+    const boardContainer = document.querySelector<HTMLDivElement>(".boardcontainer");
+    assert(boardContainer);
 
-    const grid = document.querySelector<HTMLDivElement>(".grid");
-    assert(grid);
+    const board = document.querySelector<HTMLDivElement>(".board");
+    assert(board);
 
-    const width = Math.floor(gridContainer.offsetWidth / opts.cellSize);
-    const height = Math.floor(gridContainer.offsetHeight / opts.cellSize);
+    const width = Math.floor(boardContainer.offsetWidth / opts.cellSize);
+    const height = Math.floor(boardContainer.offsetHeight / opts.cellSize);
     super(width, height, 0, 0);
 
     // Make sure there's always an odd number of cells (for games with a centered tile).
     if (this.width % 2 === 0) {
       this.width -= 1;
-      gridContainer.style.paddingLeft = `${opts.cellSize / 2}px`;
-      gridContainer.style.paddingRight = `${opts.cellSize / 2}px`;
+      boardContainer.style.paddingLeft = `${opts.cellSize / 2}px`;
+      boardContainer.style.paddingRight = `${opts.cellSize / 2}px`;
     }
 
     if (this.height % 2 === 0) {
       this.height -= 1;
-      gridContainer.style.paddingTop = `${opts.cellSize / 2}px`;
-      gridContainer.style.paddingBottom = `${opts.cellSize / 2}px`;
+      boardContainer.style.paddingTop = `${opts.cellSize / 2}px`;
+      boardContainer.style.paddingBottom = `${opts.cellSize / 2}px`;
     }
 
     // Build all the elements as a fragment to be appended in one operation.
@@ -66,13 +64,12 @@ export class Grid<Tile extends string> extends Rect {
       this.cells.push({ inner, outer });
     }
 
-    grid.appendChild(fragment);
+    board.appendChild(fragment);
 
-    // Absolutely size the grid so that it doesn't reshape if window resizes.
-    gridContainer.style.width = gridContainer.offsetWidth.toString();
-    gridContainer.style.height = gridContainer.offsetHeight.toString();
+    // Absolutely size the board so that it doesn't reshape if window resizes.
+    boardContainer.style.width = boardContainer.offsetWidth.toString();
+    boardContainer.style.height = boardContainer.offsetHeight.toString();
 
-    this.tokens = opts.tokens;
     this.cellSize = opts.cellSize;
   }
 
@@ -83,11 +80,11 @@ export class Grid<Tile extends string> extends Rect {
     return this.cells[this.width * this.height - this.width + point.x - point.y * this.width];
   }
 
-  get(point: Point): Tile | null {
-    return (this.getCell(point).inner.innerText || null) as Tile | null;
+  get(point: Point): string | null {
+    return (this.getCell(point).inner.innerText || null) as string | null;
   }
 
-  set(point: Point, tile: Tile) {
+  set(point: Point, tile: string) {
     this.getCell(point).inner.innerText = tile;
   }
 
@@ -95,17 +92,11 @@ export class Grid<Tile extends string> extends Rect {
     this.getCell(point).outer.style.backgroundColor = backgroundColor;
   }
 
-  populateCells() {
-    this.cells.forEach((c) => {
-      c.inner.innerText = pickRandom(this.tokens);
-    });
-  }
-
   /**
    * Return a collection of all cells whose value is the same of `point`,
    * where they are touching `point` or any cell touched by point, recursively.
    */
-  getContiguous(point: Point): { point: Point; value: Tile | null }[] {
+  getContiguous(point: Point): { point: Point; value: string | null }[] {
     const self = this; // eslint-disable-line @typescript-eslint/no-this-alias
     const value = this.get(point);
     const matches = new Map<string, Point>();
@@ -136,7 +127,7 @@ export class Grid<Tile extends string> extends Rect {
     return Array.from(matches.values()).map((point) => ({ point, value: this.get(point) }));
   }
 
-  drawRect(rect: Rect, tile: Tile) {
+  drawRect(rect: Rect, tile: string) {
     if (!this.contains(rect)) {
       throw new Error("Cannot draw rect. It does not fit on the grid.");
     }

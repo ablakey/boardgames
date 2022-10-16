@@ -1,3 +1,5 @@
+export type ValueOf<T> = T[keyof T];
+
 export function assert(condition: any): asserts condition {
   if (!condition) {
     throw new Error("Assertion Error");
