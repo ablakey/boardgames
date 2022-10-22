@@ -1,18 +1,12 @@
-import { MAX_ROOM_ITERATIONS, Tile } from "../config";
+import { Tile } from "../config";
 import { Point } from "../structs/Point";
 import { Rect } from "../structs/Rect";
-import { randInt } from "../utils";
 
-type WorldOptions = {
-  width: number;
-  height: number;
-  maxEccentricity: number;
-  minRoomSize: number;
-  maxRoomSize: number;
-  maxRoomCount: number;
-};
-
-class Tiles {
+/**
+ * An interface for an array of grid squares.
+ */
+export class World {
+  public rooms: Rect[] = [];
   private data: Tile[]; // Row-major.
   private width: number;
   private height: number;
@@ -23,69 +17,55 @@ class Tiles {
     this.data = new Array<Tile>(width * height).fill(Tile.Wall);
   }
 
-  get(point: Point) {
+  get(point: Point): Tile | null {
+    if (point.x < 0 || point.y < 0 || point.x >= this.width || point.y >= this.height) {
+      return null;
+    }
     return this.data[point.y * this.width + point.x];
+  }
+
+  /**
+   * Return an array of neighbours
+   */
+  getNeighbours(point: Point) {
+    const neighbours: (Point & { tile: Tile })[] = [];
+
+    for (let y = point.y - 1; y === point.y + 1; y++) {
+      for (let x = point.x - 1; x === point.x + 1; x++) {
+        console.log(x, y);
+        if (x === point.x && y === point.y) {
+          continue;
+        }
+
+        const tile = this.get({ x, y });
+        if (tile !== null) {
+          neighbours.push({ x, y, tile });
+        } else {
+          console.log(tile, x, y);
+        }
+      }
+    }
+
+    return neighbours;
   }
 
   set(point: Point, tile: Tile) {
     this.data[point.y * this.width + point.x] = tile;
   }
 
-  forEach(callback: (point: Point, tile: Tile) => void) {
+  forEach(callback: (tile: Tile, point: Point) => void) {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        callback({ x, y }, this.get({ x, y }));
+        callback(this.get({ x, y })!, { x, y });
       }
     }
   }
-}
 
-export class World {
-  tiles: Tiles;
-  rooms: Rect[] = [];
-  opts: WorldOptions;
-
-  constructor(opts: WorldOptions) {
-    this.opts = opts;
-    this.tiles = new Tiles(opts.width, opts.height);
-
-    // Generate rooms.
-    for (let n = 0; n < MAX_ROOM_ITERATIONS; n++) {
-      this.tryBuildRoom();
-      if (this.rooms.length >= this.opts.maxRoomCount) {
-        break;
+  *[Symbol.iterator]() {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        yield [this.get({ x, y })!, { x, y }] as const;
       }
     }
-
-    // Populate tiles from rooms.
-    this.rooms.forEach((r) =>
-      r.forEachCell((point) => {
-        this.tiles.set(point, Tile.Floor);
-      })
-    );
   }
-
-  private tryBuildRoom() {
-    const width = randInt(this.opts.minRoomSize, this.opts.maxRoomSize, true);
-    const height = randInt(this.opts.minRoomSize, this.opts.maxRoomSize, true);
-
-    const x = randInt(0, this.opts.width - width, true);
-    const y = randInt(0, this.opts.height - height, true);
-
-    const room = new Rect(width, height, x, y);
-
-    for (let n = 0; n < this.rooms.length; n++) {
-      if (this.rooms[n].hasCollision(room)) {
-        return false;
-      }
-    }
-
-    this.rooms.push(room);
-    return true;
-  }
-
-  /**
-   * Starting at the top-left, find a "wall" cell that is surrounded by other "wall" cells.
-   */
-  private findBuriedCell() {}
 }

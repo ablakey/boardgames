@@ -6,12 +6,12 @@ import {
   MIN_ROOM_SIZE,
   tileEmojis,
 } from "./config";
-import { World } from "./game/World";
+import { buildWorld } from "./game/buildWorld";
 
 function main() {
   const board = new Board({ cellSize: 15 });
 
-  const world = new World({
+  const world = buildWorld({
     width: board.width,
     height: board.height,
     minRoomSize: MIN_ROOM_SIZE,
@@ -20,7 +20,9 @@ function main() {
     maxRoomCount: MAX_ROOM_COUNT,
   });
 
-  world.tiles.forEach((point, tile) => board.set(point, tileEmojis[tile]));
+  for (const [tile, point] of world) {
+    board.set(point, tileEmojis[tile]);
+  }
 }
 
 window.onload = main;

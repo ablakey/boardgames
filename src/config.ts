@@ -2,11 +2,13 @@
 export enum Tile {
   Wall,
   Floor,
+  Maze,
 }
 
 export const tileEmojis: Record<Tile, string> = {
   [Tile.Floor]: "⬜",
   [Tile.Wall]: "⬛",
+  [Tile.Maze]: "🟧",
 } as const;
 
 // Room generation.
