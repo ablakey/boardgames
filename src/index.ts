@@ -20,8 +20,8 @@ function main() {
     maxRoomCount: MAX_ROOM_COUNT,
   });
 
-  for (const [tile, point] of world) {
-    board.set(point, tileEmojis[tile]);
+  for (const cell of world) {
+    board.set(cell);
   }
 }
 

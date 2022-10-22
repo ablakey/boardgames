@@ -1,4 +1,12 @@
-import { Point } from "./Point";
+export enum Tile {
+  Wall,
+  Floor,
+  Maze,
+}
+
+export type Point = { x: number; y: number };
+
+export type Cell = Point & { tile: Tile };
 
 export class Rect {
   width: number;

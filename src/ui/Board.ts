@@ -1,5 +1,5 @@
-import { Point } from "../structs/Point";
-import { Rect } from "../structs/Rect";
+import { tileEmojis } from "../config";
+import { Cell, Point, Rect, Tile } from "../structs";
 import { assert } from "../utils";
 
 export class Board extends Rect {
@@ -85,8 +85,8 @@ export class Board extends Rect {
     return (this.getCell(point).inner.innerText || null) as string | null;
   }
 
-  set(point: Point, tile: string) {
-    this.getCell(point).inner.innerText = tile;
+  set(cell: Cell) {
+    this.getCell(cell).inner.innerText = tileEmojis[cell.tile];
   }
 
   setBg(point: Point, backgroundColor: string) {
@@ -128,14 +128,14 @@ export class Board extends Rect {
     return Array.from(matches.values()).map((point) => ({ point, value: this.get(point) }));
   }
 
-  drawRect(rect: Rect, tile: string) {
+  drawRect(rect: Rect, tile: Tile) {
     if (!this.contains(rect)) {
       throw new Error("Cannot draw rect. It does not fit on the grid.");
     }
 
     for (let y = rect.y; y < rect.yMax; y++) {
       for (let x = rect.x; x < rect.xMax; x++) {
-        this.set({ x, y }, tile);
+        this.set({ x, y, tile });
       }
     }
   }

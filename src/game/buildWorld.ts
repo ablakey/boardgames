@@ -1,5 +1,5 @@
-import { MAX_ROOM_ITERATIONS, Tile } from "../config";
-import { Rect } from "../structs/Rect";
+import { MAX_ROOM_ITERATIONS } from "../config";
+import { Rect, Tile } from "../structs";
 import { randInt } from "../utils";
 import { World } from "./World";
 
@@ -30,6 +30,9 @@ export function buildWorld(opts: WorldOptions) {
     })
   );
 
+  // Generate maze.
+  // buildMaze();
+
   return world;
 
   function tryBuildRoom() {
@@ -51,17 +54,43 @@ export function buildWorld(opts: WorldOptions) {
     return true;
   }
 
-  function buildMaze() {}
+  function buildMaze() {
+    while (true) {
+      // While there are cells to be found (until it returns null)
+      const cell = findBuriedCell();
+
+      // No more cells left to unbury with a maze.
+      if (cell == null) {
+        break;
+      }
+
+      // Look at cardinal directions around cell (if we find none, loop around, finding a new buried cell)
+      const choices = (["Up", "Down", "Left", "Right"] as const)
+        .map((direction) => ({ tile: world.get(cell, direction) }))
+        .filter((c) => c !== null);
+
+      // There are no valid choices left.
+      if (choices.length === 0) {
+        break;
+      }
+    }
+
+    // Assemble list of which are openable (surrounded by dirt except for the parent cell)
+    // Pick one and open it, then repeat. Bias towards same direction.
+
+    // console.log(cell);
+  }
 
   function findBuriedCell() {
-    for (const [tile, point] of world) {
-      if (tile === Tile.Wall) {
-        const neighbours = world.getNeighbours(point);
-        if (
-          neighbours.length === 8 &&
-          neighbours.map((n) => n.tile).every((t) => t === Tile.Wall)
-        ) {
-          return point;
+    for (const cell of world) {
+      if (cell.tile === Tile.Wall) {
+        const neighbours = world.getNeighbours(cell);
+        const wallTiles = Object.values(neighbours)
+          .filter((t) => t !== null)
+          .filter((t) => t!.tile === Tile.Wall);
+
+        if (wallTiles.length === 8) {
+          return cell;
         }
       }
     }

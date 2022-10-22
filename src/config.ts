@@ -1,9 +1,4 @@
-// Tiles
-export enum Tile {
-  Wall,
-  Floor,
-  Maze,
-}
+import { Tile } from "./structs";
 
 export const tileEmojis: Record<Tile, string> = {
   [Tile.Floor]: "⬜",
