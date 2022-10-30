@@ -4,6 +4,19 @@ export type Cardinal = "Up" | "Down" | "Left" | "Right";
 
 export type Direction = Cardinal | "UpLeft" | "UpRight" | "DownLeft" | "DownRight";
 
+export const cardinalDirections: readonly Cardinal[] = ["Up", "Down", "Left", "Right"] as const;
+
+const cardinalOffsets: Record<Car, [number, number]> = {
+  UpLeft: [-1, 1],
+  Up: [0, 1],
+  UpRight: [1, 1],
+  Right: [1, 0],
+  DownRight: [1, -1],
+  Down: [0, -1],
+  DownLeft: [-0, -1],
+  Left: [-1, 0],
+};
+
 const neighbourOffsets: Record<Direction, [number, number]> = {
   UpLeft: [-1, 1],
   Up: [0, 1],
@@ -40,7 +53,7 @@ export class World {
       return null;
     }
 
-    return { tile: this.data[y * this.width + x], ...point };
+    return new Cell(x, y, this.data[y * this.width + x]);
   }
 
   /**
@@ -58,6 +71,19 @@ export class World {
 
   set(point: Point, tile: Tile) {
     this.data[point.y * this.width + point.x] = tile;
+  }
+
+  isDiggable(origin: Cell, direction: Direction): boolean {
+    const target = this.get(origin, direction);
+
+    if (target === null) {
+      return false;
+    }
+
+    return Object.values(this.getNeighbours(target))
+      .filter((n) => n !== null)
+      .filter((n) => !n!.is(origin))
+      .every((n) => n!.tile === Tile.Wall);
   }
 
   forEach(callback: (cell: Cell) => void) {

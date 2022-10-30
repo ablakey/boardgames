@@ -6,7 +6,21 @@ export enum Tile {
 
 export type Point = { x: number; y: number };
 
-export type Cell = Point & { tile: Tile };
+export class Cell {
+  x: number;
+  y: number;
+  tile: Tile;
+
+  constructor(x: number, y: number, tile: Tile) {
+    this.x = x;
+    this.y = y;
+    this.tile = tile;
+  }
+
+  is(c: Cell) {
+    return this.x === c.x && this.y === c.y;
+  }
+}
 
 export class Rect {
   width: number;

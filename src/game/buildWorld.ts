@@ -1,7 +1,7 @@
 import { MAX_ROOM_ITERATIONS } from "../config";
-import { Rect, Tile } from "../structs";
-import { randInt } from "../utils";
-import { World } from "./World";
+import { Cell, Rect, Tile } from "../structs";
+import { randInt, pickRandom } from "../utils";
+import { Cardinal, World } from "./World";
 
 type WorldOptions = {
   width: number;
@@ -31,7 +31,7 @@ export function buildWorld(opts: WorldOptions) {
   );
 
   // Generate maze.
-  // buildMaze();
+  buildMaze();
 
   return world;
 
@@ -55,25 +55,68 @@ export function buildWorld(opts: WorldOptions) {
   }
 
   function buildMaze() {
-    while (true) {
-      // While there are cells to be found (until it returns null)
-      const cell = findBuriedCell();
+    let lastCardinal: Cardinal = "Right";
+    let cell: Cell | null = null;
 
-      // No more cells left to unbury with a maze.
-      if (cell == null) {
+    let x = 0;
+    while (x < 100) {
+      // Seed another strand of the maze.
+      if (cell === null) {
+        cell = findBuriedCell();
+      }
+
+      // If cannot be seeded, we're done.
+      if (cell === null) {
         break;
       }
 
-      // Look at cardinal directions around cell (if we find none, loop around, finding a new buried cell)
-      const choices = (["Up", "Down", "Left", "Right"] as const)
-        .map((direction) => ({ tile: world.get(cell, direction) }))
-        .filter((c) => c !== null);
+      world.set(cell, Tile.Maze);
 
-      // There are no valid choices left.
-      if (choices.length === 0) {
-        break;
+      // TODO: make Reduce?
+      const candidates: Partial<Record<Cardinal, Cell>> = {};
+      for (const cardinal of ["Up", "Down", "Left", "Right"] as const) {
+        if (world.isDiggable(cell, cardinal)) {
+          candidates[cardinal] = world.get(cell, cardinal)!;
+        }
       }
+
+      console.log(candidates);
+
+      if (Object.keys(candidates).length === 0) {
+        cell = null;
+      } else if (Math.random() > 0.5 && Object.keys(candidates).includes(lastCardinal)) {
+        cell = candidates[lastCardinal]!;
+      } else {
+        const [nextCardinal, nextCell] = pickRandom(Object.entries(candidates));
+        cell = nextCell;
+        lastCardinal = nextCardinal as Cardinal;
+      }
+
+      // // Find another candidate.
+      // if (Math.random() > 0.25 && world.isDiggable(world.get(cell, lastCardinal), cell)) {
+      //   const newCell = world.get(cell, lastCardinal);
+      //   cell = newCell;
+      // } else {
+      //   const choices = ["Up", "Down", "Left", "Right"]
+      //     .filter((c) => c !== lastCardinal)
+      //     .filter((c) => world.isDiggable(world.get(cell!, c as Cardinal), cell)) as Cardinal[];
+
+      //   if (choices.length) {
+      //     lastCardinal = pickRandom(choices);
+      //     cell = world.get(cell, lastCardinal);
+      //   } else {
+      //     cell = null;
+      //   }
+
+      x++;
+      // Pick randomly from another direction.
     }
+    console.log(x);
+
+    // Note: When growing a maze, every cell that we carve must be completely enclosed with
+    // exception of the origin.  So we need a function that checks enclosure, minus a direction
+    // It should return true if there's 7 directions that are closed, and none of them are
+    // the point provided.
 
     // Assemble list of which are openable (surrounded by dirt except for the parent cell)
     // Pick one and open it, then repeat. Bias towards same direction.

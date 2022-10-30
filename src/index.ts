@@ -1,11 +1,5 @@
 import { Board } from "./ui/Board";
-import {
-  MAX_ROOM_COUNT,
-  MAX_ROOM_ECCENTRICITY,
-  MAX_ROOM_SIZE,
-  MIN_ROOM_SIZE,
-  tileEmojis,
-} from "./config";
+import { MAX_ROOM_COUNT, MAX_ROOM_ECCENTRICITY, MAX_ROOM_SIZE, MIN_ROOM_SIZE } from "./config";
 import { buildWorld } from "./game/buildWorld";
 
 function main() {
