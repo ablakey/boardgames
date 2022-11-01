@@ -1,8 +1,4 @@
-export enum Tile {
-  Wall,
-  Floor,
-  Maze,
-}
+export type Tile = "Wall" | "Floor" | "Maze";
 
 export type Point = { x: number; y: number };
 

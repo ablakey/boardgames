@@ -1,9 +1,9 @@
 import { Tile } from "./structs";
 
 export const tileEmojis: Record<Tile, string> = {
-  [Tile.Floor]: "⬜",
-  [Tile.Wall]: "⬛",
-  [Tile.Maze]: "🟧",
+  Floor: "⬜",
+  Wall: "⬛",
+  Maze: "🟧",
 } as const;
 
 // Room generation.
