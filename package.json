@@ -1,7 +1,7 @@
 {
-  "name": "boardgames",
+  "name": "dungeon",
   "version": "1.0.2",
-  "description": "An assortment of boardgames",
+  "description": "Some dungeon experiment.",
   "scripts": {
     "start": "parcel ./src/index.html"
   },

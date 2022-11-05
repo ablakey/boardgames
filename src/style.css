@@ -41,8 +41,8 @@ body {
 }
 
 .ui {
-  min-height: 20vh;
-  height: 20vh;
+  min-height: 0;
+  height: 0;
 }
 
 .outer {

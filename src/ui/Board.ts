@@ -76,7 +76,7 @@ export class Board extends Rect {
 
   private getCell(point: Point) {
     if (point.x >= this.width || point.y >= this.height) {
-      throw new Error("Coordinates sit outside the board.");
+      throw new Error(`Coordinates sit outside the board: ${point.x}, ${point.y}`);
     }
     return this.cells[this.width * this.height - this.width + point.x - point.y * this.width];
   }
