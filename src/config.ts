@@ -9,5 +9,5 @@ export const Tiles = {
 // Room generation.
 export const MIN_ROOM_SIZE = 3;
 export const MAX_ROOM_SIZE = 9;
-export const MAX_ROOM_COUNT = 30;
-export const MAX_ROOM_ITERATIONS = 1000;
+export const MAX_ROOM_COUNT = 200;
+export const MAX_ROOM_ITERATIONS = 10000;

@@ -1,5 +1,5 @@
 import { Tiles } from "../config";
-import { Cell, Point, Rect, Tile } from "../structs";
+import { Cell, Point, Rect } from "../structs";
 import { assert } from "../utils";
 
 export class Board extends Rect {
@@ -126,17 +126,5 @@ export class Board extends Rect {
     checkNeighbours(point);
 
     return Array.from(matches.values()).map((point) => ({ point, value: this.get(point) }));
-  }
-
-  drawRect(rect: Rect, tile: Tile) {
-    if (!this.contains(rect)) {
-      throw new Error("Cannot draw rect. It does not fit on the grid.");
-    }
-
-    for (let y = rect.y; y < rect.yMax; y++) {
-      for (let x = rect.x; x < rect.xMax; x++) {
-        this.set({ x, y, tile });
-      }
-    }
   }
 }

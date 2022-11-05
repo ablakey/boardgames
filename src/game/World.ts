@@ -77,10 +77,13 @@ export class World {
     });
   }
 
-  *[Symbol.iterator]() {
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        yield this.get({ x, y })!;
+  forEachInRect(rect: Rect, callback: (cell: Cell) => void) {
+    for (let y = rect.y; y < rect.height; y++) {
+      for (let x = rect.x; x < rect.width; x++) {
+        const c = this.get({ x, y });
+        if (c) {
+          callback(c);
+        }
       }
     }
   }

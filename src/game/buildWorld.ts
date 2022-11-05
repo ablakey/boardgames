@@ -43,7 +43,6 @@ export function buildWorld(opts: WorldOptions) {
       for (const cell of shuffle(room.getEdge(cardinal))) {
         if (world.get(cell, cardinal, 2)?.tile === "Floor") {
           world.set(cell, "Floor");
-          console.log("set");
           break outer;
         }
       }
