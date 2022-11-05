@@ -1,5 +1,5 @@
 import { Board } from "./ui/Board";
-import { MAX_ROOM_COUNT, MAX_ROOM_ECCENTRICITY, MAX_ROOM_SIZE, MIN_ROOM_SIZE } from "./config";
+import { MAX_ROOM_COUNT, MAX_ROOM_SIZE, MIN_ROOM_SIZE } from "./config";
 import { buildWorld } from "./game/buildWorld";
 
 function main() {
@@ -10,7 +10,6 @@ function main() {
     height: board.height,
     minRoomSize: MIN_ROOM_SIZE,
     maxRoomSize: MAX_ROOM_SIZE,
-    maxEccentricity: MAX_ROOM_ECCENTRICITY,
     maxRoomCount: MAX_ROOM_COUNT,
   });
 

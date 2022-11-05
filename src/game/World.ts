@@ -48,14 +48,8 @@ export class World {
   /**
    * Return an array of neighbours
    */
-  getNeighbours(point: Point) {
-    const neighbours = Object.keys(offsets).reduce((acc, direction) => {
-      const cell = this.get(point, direction as Direction);
-      acc[direction as Direction] = cell === null ? null : cell;
-      return acc;
-    }, {} as Record<Direction, Cell | null>);
-
-    return neighbours;
+  getNeighbours(point: Point): Cell[] {
+    return cardinalDirections.map((c) => this.get(point, c)).filter((n) => n !== null) as Cell[];
   }
 
   set(point: Point, tile: Tile, direction?: Direction, distance = 1) {
@@ -67,25 +61,20 @@ export class World {
     this.data[cell.x + cell.y * this.width] = tile;
   }
 
-  isDiggable(origin: Cell, direction: Direction): boolean {
-    const target = this.get(origin, direction);
-
-    if (target === null) {
-      return false;
-    }
-
-    return Object.values(this.getNeighbours(target))
-      .filter((n) => n !== null)
-      .filter((n) => !n!.is(origin))
-      .every((n) => n!.tile === "Wall");
-  }
-
   forEach(callback: (cell: Cell) => void) {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         callback(this.get({ x, y })!);
       }
     }
+  }
+
+  forEachOdd(callback: (cell: Cell) => void) {
+    this.forEach((c) => {
+      if (c.x % 2 === 1 && c.y % 2 === 1) {
+        callback(c);
+      }
+    });
   }
 
   *[Symbol.iterator]() {

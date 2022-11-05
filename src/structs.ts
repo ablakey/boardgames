@@ -1,4 +1,8 @@
-export type Tile = "Wall" | "Floor" | "Maze";
+import { tileEmojis } from "./config";
+import { Cardinal } from "./game/World";
+import { range } from "./utils";
+
+export type Tile = keyof typeof tileEmojis;
 
 export type Point = { x: number; y: number };
 
@@ -37,6 +41,19 @@ export class Rect {
 
   get yMax() {
     return this.y + this.height;
+  }
+
+  getEdge(cardinal: Cardinal): Point[] {
+    switch (cardinal) {
+      case "Up":
+        return range(0, this.width).map((v) => ({ x: this.x + v, y: this.y + this.height }));
+      case "Down":
+        return range(0, this.width).map((v) => ({ x: this.x + v, y: this.y - 1 }));
+      case "Left":
+        return range(0, this.height).map((v) => ({ x: this.x - 1, y: this.y + v }));
+      case "Right":
+        return range(0, this.height).map((v) => ({ x: this.x + this.width, y: this.y + v }));
+    }
   }
 
   hasCollision(rect: Rect, buffer = 0) {
