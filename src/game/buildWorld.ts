@@ -22,7 +22,7 @@ export function buildWorld(opts: WorldOptions) {
     }
   }
 
-  // Populate tiles from rooms.
+  // Populate Tiles from rooms.
   world.rooms.forEach((r) =>
     r.forEachCell((point) => {
       world.set(point, "Floor");

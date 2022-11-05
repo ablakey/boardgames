@@ -1,8 +1,8 @@
-import { tileEmojis } from "./config";
+import { Tiles } from "./config";
 import { Cardinal } from "./game/World";
 import { range } from "./utils";
 
-export type Tile = keyof typeof tileEmojis;
+export type Tile = keyof typeof Tiles;
 
 export type Point = { x: number; y: number };
 

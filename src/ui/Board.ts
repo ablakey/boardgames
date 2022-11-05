@@ -1,4 +1,4 @@
-import { tileEmojis } from "../config";
+import { Tiles } from "../config";
 import { Cell, Point, Rect, Tile } from "../structs";
 import { assert } from "../utils";
 
@@ -86,7 +86,7 @@ export class Board extends Rect {
   }
 
   set(cell: Cell) {
-    this.getCell(cell).inner.innerText = tileEmojis[cell.tile];
+    this.getCell(cell).inner.innerText = Tiles[cell.tile];
   }
 
   setBg(point: Point, backgroundColor: string) {

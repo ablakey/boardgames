@@ -1,4 +1,4 @@
-export const tileEmojis = {
+export const Tiles = {
   Floor: "⬜",
   Wall: "⬛",
   Other: "🟧",
