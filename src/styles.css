@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.ui {
+  background-color: cyan;
+  height: 20%;
+}
+
+.board {
+  height: 80%;
+  background-color: gray;
+}
+
+.board > div {
+  border: 1px solid red;
+}
+
+.foo {
+  width: 56.25vh;
+  height: 100vh;
+  background: pink;
+  max-height: 177.78vw;
+  max-width: 100vw;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
