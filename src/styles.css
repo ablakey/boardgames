@@ -34,12 +34,21 @@ body {
   display: inline-grid;
   vertical-align: top;
   grid-template-columns: repeat(var(--cols), 1fr);
-  grid-template-rows: repeat(var(--rows), 1fr);
 }
 
+/* Cells (outer) */
 .board > div {
   border: 1px solid red;
   aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cells (inner) */
+.board > div > div {
+  position: absolute;
+  font-size: var(--emojisize);
 }
 
 .container {
