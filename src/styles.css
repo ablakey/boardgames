@@ -14,6 +14,7 @@ body {
   justify-content: center;
   overflow: hidden;
   touch-action: none;
+  background-color: lightgray;
 }
 
 .top {
@@ -21,7 +22,6 @@ body {
 }
 
 .ui {
-  background-color: cyan;
   height: 19%;
 }
 
@@ -30,7 +30,6 @@ body {
   row-gap: 2px;
   height: 80%;
   width: 100%;
-  background-color: gray;
   display: inline-grid;
   vertical-align: top;
   grid-template-columns: repeat(var(--cols), 1fr);
@@ -38,23 +37,22 @@ body {
 
 /* Cells (outer) */
 .board > div {
-  border: 1px solid red;
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: gray;
 }
 
 /* Cells (inner) */
 .board > div > div {
   position: absolute;
-  font-size: var(--emojisize);
+  font-size: var(--distance);
 }
 
 .container {
   width: 56.25vh;
   height: 100%;
-  background: pink;
   max-height: 177.78vw;
   max-width: 100vw;
   margin: auto;
@@ -63,4 +61,68 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.animate-right {
+  animation-duration: 0.3s;
+  animation-name: right;
+  animation-timing-function: linear;
+}
+
+@keyframes right {
+  from {
+    transform: translate(0);
+  }
+
+  to {
+    transform: translateX(var(--distance));
+  }
+}
+
+.animate-left {
+  animation-duration: 0.3s;
+  animation-name: left;
+  animation-timing-function: linear;
+}
+
+@keyframes left {
+  from {
+    transform: translate(0);
+  }
+
+  to {
+    transform: translateX(calc(0px - var(--distance)));
+  }
+}
+
+.animate-up {
+  animation-duration: 0.3s;
+  animation-name: up;
+  animation-timing-function: linear;
+}
+
+@keyframes up {
+  from {
+    transform: translate(0);
+  }
+
+  to {
+    transform: translateY(calc(0px - var(--distance)));
+  }
+}
+
+.animate-down {
+  animation-duration: 0.3s;
+  animation-name: down;
+  animation-timing-function: linear;
+}
+
+@keyframes down {
+  from {
+    transform: translate(0);
+  }
+
+  to {
+    transform: translateY(var(--distance));
+  }
 }
